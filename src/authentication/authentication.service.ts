@@ -18,12 +18,12 @@ export class AuthenticationService {
       userEmail: userDto.userEmail,
     });
     if (user) return user;
-    const newUser = this.userRepo.create({
-      userEmail: userDto.userEmail,
-      firstName: userDto.firstName,
-      lastName: userDto.lastName,
-    });
-    this.userRepo.save(newUser);
+    // const newUser = this.userRepo.create({
+    //   userEmail: userDto.userEmail,
+    //   firstName: userDto.firstName,
+    //   lastName: userDto.lastName,
+    // });
+    // this.userRepo.save(newUser);
     log('created!');
   }
 

@@ -6,6 +6,7 @@ import entities, { User } from './typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { ProfileModule } from './profile/profile.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
+import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AnnouncementsModule } from './announcements/announcements.module';
     AuthenticationModule,
     ProfileModule,
     AnnouncementsModule,
+    AssignmentModule,
   ],
   controllers: [],
   providers: [],

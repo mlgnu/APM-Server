@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn({
     name: 'user_id',
@@ -11,28 +11,12 @@ export class User {
   @Column({
     name: 'user_email',
     nullable: false,
+    unique: true,
   })
   userEmail: string;
-
-  @Column({
-    name: 'first_name',
-    nullable: false,
-  })
-  firstName: string;
-
-  @Column({
-    name: 'last_name',
-    nullable: false,
-  })
-  lastName: string;
 
   @Column({
     default: 0,
   })
   role: number;
-
-  @Column({
-    nullable: true,
-  })
-  department: string;
 }
