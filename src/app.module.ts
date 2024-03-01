@@ -7,9 +7,16 @@ import { PassportModule } from '@nestjs/passport';
 import { ProfileModule } from './profile/profile.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
 import { AssignmentModule } from './assignment/assignment.module';
+import { MessageModule } from './message/message.module';
+import { MonitorModule } from './monitor/monitor.module';
+import { ConfigModule } from '@nestjs/config';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     CustomerModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -25,8 +32,10 @@ import { AssignmentModule } from './assignment/assignment.module';
     ProfileModule,
     AnnouncementsModule,
     AssignmentModule,
+    MessageModule,
+    MonitorModule,
+    FeedbackModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}
