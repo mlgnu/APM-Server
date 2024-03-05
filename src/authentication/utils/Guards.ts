@@ -30,6 +30,16 @@ export class StudentGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    return request.user == 0;
+    return request.user.role == 0;
+  }
+}
+
+export class CoordinatorGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+    console.log(request.user, 'from coordinator guard');
+    return request.user?.role == 2;
   }
 }
