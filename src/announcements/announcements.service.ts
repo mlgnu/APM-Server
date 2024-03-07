@@ -13,21 +13,21 @@ export class AnnouncementsService {
   async create(announcement: string): Promise<Announcement> {
     return await this.announcementRepo.save({ announcement });
   }
-  
+
   async findAll(page: number) {
     const limit = 15;
     const offset = (page - 1) * limit;
 
-    const announcementsPage = await this.announcementRepo.find({
+    const payload = await this.announcementRepo.find({
       order: { created_at: 'DESC' },
       take: limit,
       skip: offset,
       //select: ['announcement', 'created_at'],
     });
 
-    const count = await this.announcementRepo.count();  
+    const count = await this.announcementRepo.count();
     const pages = Math.ceil(count / limit);
-    return {announcementsPage, pages };
+    return { payload, pages };
   }
 
   async findOne(id: any) {
