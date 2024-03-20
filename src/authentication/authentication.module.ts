@@ -6,13 +6,16 @@ import { User } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SessionSerializer } from './utils/Serializer';
 import { PassportModule } from '@nestjs/passport';
+import { Student } from 'src/typeorm/Student';
+import { Advisor } from 'src/typeorm/Advisor';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Student, Advisor]),
     PassportModule.register({ session: true }),
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, GoogleStrategy, SessionSerializer],
+  exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

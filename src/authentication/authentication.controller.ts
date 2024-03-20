@@ -8,12 +8,14 @@ import {
   UsePipes,
   ValidationPipe,
   Request,
-  Response,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/CreateUserDto';
 import { log } from 'console';
-import { GoogleAuthGuard } from './utils/Guards';
+import { GoogleAuthGuard, LoginGuard } from './utils/Guards';
+import { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth/google')
 export class AuthenticationController {
@@ -25,27 +27,39 @@ export class AuthenticationController {
 
   @Get('login')
   @UseGuards(GoogleAuthGuard)
-  handleAuth() {
-    return {
-      msg: 'google',
-    };
+  google() {
+    console.log('ajs');
   }
   // I want to check if the user is logged in or not please
-
   @Get('redirect')
   @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Request() req: any, @Response() res: any) {
-    if (req.user) {
+  googleLoginCallback(@Request() req, @Res() res: Response) {
+    const googleToken = req.user.accessToken;
+    const googleRefreshToken = req.user.refreshToken;
+
+    res.cookie('access_token', googleToken, { httpOnly: true });
+    res.cookie('refresh_token', googleRefreshToken, {
+      httpOnly: true,
+    });
+
+    res.redirect('http://localhost:5173');
+  }
+  handleRedirect(@Request() req: any, @Res() res: any) {
+    console.log(req.user);
+    if (req.isAuthenticated()) {
       res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
     }
   }
 
   @Get('logout')
-  logout(@Request() req: any, @Response() res: any) {
+  logout(@Request() req: any, @Res() res: any) {
     req.logout(function (err) {
       if (err) {
         return console.log(err);
       }
+      res.clearCookie('access_token');
+      res.clearCookie('refresh_token');
+      res.clearCookie('SESSION_ID');
       res.location('/');
       res.status(HttpStatus.TEMPORARY_REDIRECT).end();
       // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
