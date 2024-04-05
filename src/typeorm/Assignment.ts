@@ -1,19 +1,65 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { Coordinator } from './Coordinator';
+import { Department } from 'types';
+import { StudentAdvisorAssignment } from './StudentAdvisorAssignment';
 
-@Entity({ name: 'assignments' })
+export enum AssignmentStatus {
+  PENDING = 'pending',
+  REJECTED = 'rejected',
+  APPROVED = 'approved',
+}
+
+@Entity('assignments')
 export class Assignment {
-  @PrimaryGeneratedColumn({
-    name: 'assignment_id',
-    type: 'bigint',
+  @PrimaryGeneratedColumn()
+  assignmentId: number;
+
+  @Column({
+    name: 'assignment_status',
+    type: 'enum',
+    enum: AssignmentStatus,
+    default: AssignmentStatus.PENDING,
+    nullable: true,
   })
-  id: number;
+  status: AssignmentStatus;
 
-  @Column()
-  student_id: number;
+  @Column({ type: 'enum', enum: Department, nullable: true })
+  department: Department;
 
-  @Column()
-  supervisor_id: number;
+  @Column({})
+  year: number;
 
-  @Column()
-  collection_id: number;
+  @Column({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @Column({ name: 'updated_at', type: 'timestamp', nullable: true })
+  updatedAt: Date;
+
+  @Column({ nullable: true, type: 'text' })
+  message: string;
+
+  // @Column({ name: 'coordinator_id', nullable: true })
+  @ManyToOne(() => Coordinator)
+  @JoinColumn({ name: 'coordinator_id' })
+  coordinator: Coordinator;
+  // coordinator: Coordinator;
+
+  @OneToMany(
+    () => StudentAdvisorAssignment,
+    (studentAdvisorAssignment) => studentAdvisorAssignment.assignment,
+    { onDelete: 'CASCADE' },
+  )
+  studentAdvisorAssignments: StudentAdvisorAssignment[];
 }

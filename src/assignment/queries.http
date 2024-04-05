@@ -1,0 +1,16 @@
+POST localhost:3001/api/assignment/assign
+Content-Type: application/json
+
+{
+ "advisorId": "34353",
+ "studentId": "2923"
+}
+
+
+POST localhost:3001/api/assignment/assign
+Content-Type: application/json
+
+{
+    "batchYear": "2020",
+    "department": "Software Engineering"
+  }
