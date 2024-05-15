@@ -4,12 +4,14 @@ import {
   OneToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './User';
+import { Advisor } from './Advisor';
 
 @Entity('students')
 export class Student {
-  @PrimaryGeneratedColumn({ name: 'studdnt_id' })
+  @PrimaryGeneratedColumn({ name: 'student_id' })
   id: number;
 
   @Column({
@@ -29,7 +31,13 @@ export class Student {
   })
   department: string;
 
+  // @Column({ name: 'user_id', type: 'int', nullable: true })
+  // userId: number;
+
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => Advisor, (advisor) => advisor.students)
+  advisor: Advisor;
 }

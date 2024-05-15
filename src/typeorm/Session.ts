@@ -9,18 +9,18 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('sessions')
 export class SessionEntity implements ISession {
   @Index()
   @Column('bigint')
-  public expiredAt = Date.now();
+  expiredAt = Date.now();
 
   @PrimaryColumn('varchar', { length: 255 })
-  public id = '';
+  id = '';
 
   @Column('text')
-  public json = '';
+  json = '';
 
   @DeleteDateColumn()
-  public destroyedAt?: Date;
+  destroyedAt?: Date;
 }

@@ -4,8 +4,10 @@ import {
   OneToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './User';
+import { Student } from './Student';
 
 @Entity('advisors')
 export class Advisor {
@@ -32,4 +34,7 @@ export class Advisor {
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Student, (student) => student.advisor)
+  students: Student[];
 }
