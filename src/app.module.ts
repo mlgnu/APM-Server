@@ -11,6 +11,7 @@ import { MessageModule } from './message/message.module';
 import { MonitorModule } from './monitor/monitor.module';
 import { ConfigModule } from '@nestjs/config';
 import { FeedbackModule } from './feedback/feedback.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     MessageModule,
     MonitorModule,
     FeedbackModule,
+    ActivityModule,
   ],
   controllers: [],
 })
