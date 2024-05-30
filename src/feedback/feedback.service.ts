@@ -72,36 +72,36 @@ export class FeedbackService {
     });
   }
   // to assure accuray TODO
-  async getStudentDashboardFeedback(studentId: number) {
-      .createQueryBuilder(Feedback, 'feedback')
-      .select([
-        'student.first_name, user.user_email',
-        "Extract('month' FROM sessions.date) As month",
-        "EXTRACT('year' FROM sessions.date) As year",
-        'AVG(feedback.rating) as avg_rating',
-      ])
-      .innerJoin(
-        'monitoring_sessions',
-        'sessions',
-        'feedback.session_id = sessions.id',
-      )
-      .innerJoin(
-        'students',
-        'student',
-        'sessions.student_id = student.student_id',
-      )
-      .innerJoin('users', 'user', 'student.user_id = user.user_id')
-      .innerJoin(
-        'advisors',
-        'advisor',
-        'advisor.advisor_id = sessions.advisor_id',
-      )
-      .where('advisor.user_id = :advisorId', { advisorId })
-      .groupBy('month, year, student.first_name, user.user_email')
-      .andWhere(
-        "sessions.date BETWEEN CURRENT_DATE - INTERVAL '1 year' AND CURRENT_DATE",
-      )
-      .getRawMany();
-
-  }
+  // async getStudentDashboardFeedback(studentId: number) {
+  //     .createQueryBuilder(Feedback, 'feedback')
+  //     .select([
+  //       'student.first_name, user.user_email',
+  //       "Extract('month' FROM sessions.date) As month",
+  //       "EXTRACT('year' FROM sessions.date) As year",
+  //       'AVG(feedback.rating) as avg_rating',
+  //     ])
+  //     .innerJoin(
+  //       'monitoring_sessions',
+  //       'sessions',
+  //       'feedback.session_id = sessions.id',
+  //     )
+  //     .innerJoin(
+  //       'students',
+  //       'student',
+  //       'sessions.student_id = student.student_id',
+  //     )
+  //     .innerJoin('users', 'user', 'student.user_id = user.user_id')
+  //     .innerJoin(
+  //       'advisors',
+  //       'advisor',
+  //       'advisor.advisor_id = sessions.advisor_id',
+  //     )
+  //     .where('advisor.user_id = :advisorId', { advisorId })
+  //     .groupBy('month, year, student.first_name, user.user_email')
+  //     .andWhere(
+  //       "sessions.date BETWEEN CURRENT_DATE - INTERVAL '1 year' AND CURRENT_DATE",
+  //     )
+  //     .getRawMany();
+  //
+  // }
 }

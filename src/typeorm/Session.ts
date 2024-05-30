@@ -13,13 +13,13 @@ import {
 export class SessionEntity implements ISession {
   @Index()
   @Column('bigint')
-  expiredAt = Date.now();
+  expiredAt: number;
 
   @PrimaryColumn('varchar', { length: 255 })
-  id = '';
+  id: string;
 
   @Column('text')
-  json = '';
+  json: string;
 
   @DeleteDateColumn()
   destroyedAt?: Date;

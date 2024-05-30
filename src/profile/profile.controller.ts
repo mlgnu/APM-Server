@@ -51,6 +51,7 @@ export class ProfileController {
     // return this.profileService.deleteUser(req);
   }
   @Get(':id')
+  @UseGuards(LoginGuard)
   getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.profileService.getUserById(id);
   }

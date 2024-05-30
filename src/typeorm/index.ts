@@ -9,6 +9,7 @@ import { Assignment } from './Assignment';
 import { Message } from './Message';
 import { MonitoringSession } from './MonitoringSession';
 import { Feedback } from './Feedback';
+import { Activity } from './Activity';
 
 const entities = [
   User,
@@ -22,6 +23,7 @@ const entities = [
   Message,
   MonitoringSession,
   Feedback,
+  Activity,
 ];
 
 export { User };

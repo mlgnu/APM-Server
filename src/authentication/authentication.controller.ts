@@ -51,19 +51,32 @@ export class AuthenticationController {
     }
   }
 
-  @Get('logout')
-  logout(@Request() req: any, @Res() res: any) {
-    req.logout(function (err) {
-      if (err) {
-        return console.log(err);
-      }
-      res.clearCookie('access_token');
-      res.clearCookie('refresh_token');
-      res.clearCookie('SESSION_ID');
-      res.location('/');
-      res.status(HttpStatus.TEMPORARY_REDIRECT).end();
-      // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
+  @Post('logout')
+  logout(@Request() req: any, @Res() res: Response) {
+    // req.logout(function (err) {
+    //   if (err) {
+    //     return console.log(err);
+    //   }
+    //   res.clearCookie('access_token');
+    //   res.clearCookie('refresh_token');
+    //   res.clearCookie('SESSION_ID');
+    //   // res.location('/');
+    //   // res.status(HttpStatus.TEMPORARY_REDIRECT).end();
+    //   // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
+    // });
+
+    req.logOut(() => {
+      console.log('logout');
     });
+    req.clearCookie('SESSION_ID', { path: '/', domain: 'localhost' });
+    res.clearCookie('SESSION_ID', { path: '/', domain: 'localhost' });
+    req.user = null;
+    // res.location('/');
+    return {
+      message: 'Logout successful',
+      statusCode: HttpStatus.OK,
+    };
+
     // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
   }
 }
