@@ -5,24 +5,13 @@ import * as passport from 'passport';
 import { TypeormStore } from 'connect-typeorm';
 import { DataSource } from 'typeorm';
 import { SessionEntity } from './typeorm/Session';
-import entities from './typeorm';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const connection = new DataSource({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'mohamed',
-    password: '',
-    database: 'academic_progression_monitoring',
-    entities: entities,
-    synchronize: true,
-  }).initialize();
 
-  const sessionRepo = (await connection).getRepository(SessionEntity);
+  const sessionRepo = app.get(DataSource).getRepository(SessionEntity);
   const typeormStore = new TypeormStore({ cleanupLimit: 10 }).connect(
     sessionRepo,
   );
@@ -41,7 +30,7 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        maxAge: 1000 * 60 * 60,
+        maxAge: 1000 * 60 * 60 * 24,
       },
       store: typeormStore,
     }),

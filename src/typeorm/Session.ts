@@ -13,14 +13,14 @@ import {
 export class SessionEntity implements ISession {
   @Index()
   @Column('bigint')
-  expiredAt: number;
+  public expiredAt = Date.now();
 
   @PrimaryColumn('varchar', { length: 255 })
-  id: string;
+  public id = '';
 
   @Column('text')
-  json: string;
+  public json = '';
 
   @DeleteDateColumn()
-  destroyedAt?: Date;
+  public destroyedAt?: Date;
 }

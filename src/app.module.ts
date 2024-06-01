@@ -12,6 +12,7 @@ import { MonitorModule } from './monitor/monitor.module';
 import { ConfigModule } from '@nestjs/config';
 import { FeedbackModule } from './feedback/feedback.module';
 import { ActivityModule } from './activity/activity.module';
+import { TypeOrmConfigService } from 'typeorm.config';
 
 @Module({
   imports: [
@@ -19,15 +20,10 @@ import { ActivityModule } from './activity/activity.module';
       isGlobal: true,
     }),
     CustomerModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'mohamed',
-      password: '',
-      database: 'academic_progression_monitoring',
-      entities: entities,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      inject: [TypeOrmConfigService],
+      useClass: TypeOrmConfigService,
+      imports: [ConfigModule],
     }),
     AuthenticationModule,
     ProfileModule,

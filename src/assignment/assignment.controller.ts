@@ -54,8 +54,7 @@ export class AssignmentController {
     return this.assignmentService.getAssignmentsDashboard();
   }
 
-  @UsePipes(ValidationPipe)
-  @UseGuards(CoordinatorGuard)
+  @Roles('coordinator')
   @Post('assign')
   makeAssignment(
     @Body('assignments') assignments: AssignmentDetailsDto,

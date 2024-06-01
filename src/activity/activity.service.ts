@@ -33,7 +33,6 @@ export class ActivityService {
     return await this.activityRepo.save(activity);
   }
 
-  @Roles('advisor')
   async getActivities(userId: number, page: number, limit: number) {
     const advisor = await this.authService.findAdvisorByUserId(userId);
     const count = await this.activityRepo.count({
@@ -52,9 +51,182 @@ export class ActivityService {
         advisorId: {
           user: true,
         },
+        coordinatorId: {
+          user: true,
+        },
+      },
+      select: {
+        studentId: {
+          id: true,
+          user: {
+            id: true,
+            userEmail: true,
+          },
+        },
+        advisorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
+        coordinatorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
       },
     });
     const pages = Math.ceil(count / limit);
     return { payload, pages };
+  }
+
+  async getCoordinatorActivities(page: number, limit: number) {
+    const count = await this.activityRepo.count();
+    const payload = await this.activityRepo.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      relations: {
+        studentId: {
+          user: true,
+        },
+        advisorId: {
+          user: true,
+        },
+        coordinatorId: {
+          user: true,
+        },
+      },
+      select: {
+        studentId: {
+          id: true,
+          user: {
+            id: true,
+            userEmail: true,
+          },
+        },
+        advisorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
+        coordinatorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
+      },
+    });
+    const pages = Math.ceil(count / limit);
+    return { payload, pages };
+  }
+
+  async getStudentActivities(userId: number, page: number, limit: number) {
+    const student = await this.authService.findStudentByUserId(userId);
+    const count = await this.activityRepo.count({
+      where: {
+        studentId: student,
+        status: 1,
+      },
+    });
+    const payload = await this.activityRepo.find({
+      where: { studentId: student, status: 1 },
+      take: limit,
+      skip: (page - 1) * limit,
+      relations: {
+        studentId: {
+          user: true,
+        },
+        advisorId: {
+          user: true,
+        },
+        coordinatorId: {
+          user: true,
+        },
+      },
+      select: {
+        studentId: {
+          id: true,
+          user: {
+            id: true,
+            userEmail: true,
+          },
+        },
+        advisorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
+        coordinatorId: {
+          id: true,
+          user: {
+            userEmail: true,
+          },
+        },
+      },
+    });
+    const pages = Math.ceil(count / limit);
+    return { payload, pages };
+  }
+
+  async updateActivity(id: number, createActivityDto: createActivityDto) {
+    const student = await this.studentRepo.findOneBy({
+      id: createActivityDto.studentId,
+    });
+    const activity = await this.activityRepo.findOneBy({
+      id,
+    });
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    activity.createdAt = new Date();
+    activity.studentId = student;
+    activity.description = createActivityDto.description;
+    activity.dateStart = createActivityDto.startDate;
+    activity.dateEnd = createActivityDto.endDate;
+    activity.status = 0;
+    return await this.activityRepo.save(activity);
+  }
+
+  async deleteActivity(id: number) {
+    const activity = await this.activityRepo.findOneBy({
+      id,
+    });
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    return await this.activityRepo.remove(activity);
+  }
+
+  async approveActivity(id: number, userId: number) {
+    const coordinator = await this.authService.findCoordinatorByUserId(userId);
+    const activity = await this.activityRepo.findOneBy({
+      id,
+    });
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    activity.coordinatorId = coordinator;
+    activity.updatedAt = new Date();
+    activity.status = 1;
+    return await this.activityRepo.save(activity);
+  }
+
+  async rejectActivity(id: number, message: string, userId: number) {
+    const coordinator = await this.authService.findCoordinatorByUserId(userId);
+    const activity = await this.activityRepo.findOneBy({
+      id,
+    });
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    activity.coordinatorId = coordinator;
+    activity.updatedAt = new Date();
+    activity.status = -1;
+    activity.message = message;
+    return await this.activityRepo.save(activity);
   }
 }

@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -23,11 +24,11 @@ export class Activity {
   @Column({ name: 'date_end', type: 'date' })
   dateEnd: Date;
 
-  @OneToOne(() => Advisor, { nullable: false })
+  @ManyToOne(() => Advisor, { nullable: false })
   @JoinColumn({ name: 'advisor_id' })
   advisorId: Advisor;
 
-  @OneToOne(() => Student, { nullable: false })
+  @ManyToOne(() => Student, { nullable: false })
   @JoinColumn({ name: 'student_id' })
   studentId: Student;
 
@@ -41,14 +42,17 @@ export class Activity {
   })
   createdAt: Date;
 
-  @OneToOne(() => Coordinator, { nullable: true })
+  @ManyToOne(() => Coordinator, { nullable: true })
   @JoinColumn({ name: 'coordinator_id' })
   coordinatorId: Coordinator;
+
+  @Column({ type: 'text', nullable: true })
+  message: string;
 
   @Column({
     name: 'updated_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
   })
   updatedAt: Date;
 }

@@ -6,6 +6,7 @@ import { CreateUserDto } from './dtos/CreateUserDto';
 import { log } from 'console';
 import { Student } from 'src/typeorm/Student';
 import { Advisor } from 'src/typeorm/Advisor';
+import { Coordinator } from 'src/typeorm/Coordinator';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,6 +16,8 @@ export class AuthenticationService {
     private readonly studentRepo: Repository<Student>,
     @InjectRepository(Advisor)
     private readonly advisorRepo: Repository<Advisor>,
+    @InjectRepository(Coordinator)
+    private readonly coordinatorRepo: Repository<Coordinator>,
   ) {}
 
   async validateUser(userDto: CreateUserDto) {
@@ -88,5 +91,20 @@ export class AuthenticationService {
       throw new Error('Advisor not found');
     }
     return advisor;
+  }
+
+  async findCoordinatorByUserId(
+    userId: number,
+    relations?: FindOptionsRelations<Coordinator>,
+  ) {
+    const user = await this.findUser(userId);
+    const coordinator = await this.coordinatorRepo.findOne({
+      where: { user: user },
+      relations: relations,
+    });
+    if (!coordinator) {
+      throw new Error('Coordinator not found');
+    }
+    return coordinator;
   }
 }

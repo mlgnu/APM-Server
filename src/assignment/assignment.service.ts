@@ -149,21 +149,37 @@ export class AssignmentService {
           assignmentId: savedAssignment.assignmentId,
         });
         await studentAdvisorRepo.save(assignmentData);
-        const user = await userRepo.findOneBy({
+        const userStudent = await userRepo.findOneBy({
           userEmail: studentAdvisorAssignment.studentId + '@siswa.um.edu.my',
         });
 
-        const user2 = await userRepo.findOneBy({
+        if (!userStudent) {
+          const user = userRepo.create({
+            userEmail: studentAdvisorAssignment.studentId + '@siswa.um.edu.my',
+            role: 0,
+          });
+          await userRepo.save(user);
+        }
+
+        const userAdvisor = await userRepo.findOneBy({
           userEmail: studentAdvisorAssignment.advisorId + '@um.edu.my',
         });
 
-        let advisor = await advisorRepo.findOneBy({ user: user2 });
-        let student = await studentRepo.findOneBy({ user: user });
+        if (!userAdvisor) {
+          const user = userRepo.create({
+            userEmail: studentAdvisorAssignment.advisorId + '@um.edu.my',
+            role: 1,
+          });
+          await userRepo.save(user);
+        }
+
+        let advisor = await advisorRepo.findOneBy({ user: userAdvisor });
+        let student = await studentRepo.findOneBy({ user: userStudent });
         if (!student) {
           student = studentRepo.create({
-            user: user,
-            firstName: studentAdvisorAssignment.studentId,
-            lastName: '',
+            user: student,
+            firstName: 'Student',
+            lastName: studentAdvisorAssignment.studentId,
             department:
               Department[assignment.department as keyof typeof Department],
           });
@@ -172,9 +188,9 @@ export class AssignmentService {
 
         if (!advisor) {
           advisor = advisorRepo.create({
-            user: user2,
-            firstName: studentAdvisorAssignment.advisorId,
-            lastName: '',
+            user: userAdvisor,
+            firstName: 'Advisor',
+            lastName: studentAdvisorAssignment.advisorId,
             department:
               Department[assignment.department as keyof typeof Department],
           });
@@ -182,7 +198,6 @@ export class AssignmentService {
         }
         student.advisor = advisor;
         await studentRepo.save(student);
-        // student.advisor =
       }
 
       await queryRunner.commitTransaction();

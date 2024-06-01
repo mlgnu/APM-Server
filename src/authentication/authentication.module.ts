@@ -8,10 +8,11 @@ import { SessionSerializer } from './utils/Serializer';
 import { PassportModule } from '@nestjs/passport';
 import { Student } from 'src/typeorm/Student';
 import { Advisor } from 'src/typeorm/Advisor';
+import { Coordinator } from 'src/typeorm/Coordinator';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Student, Advisor]),
+    TypeOrmModule.forFeature([User, Student, Advisor, Coordinator]),
     PassportModule.register({ session: true }),
   ],
   controllers: [AuthenticationController],

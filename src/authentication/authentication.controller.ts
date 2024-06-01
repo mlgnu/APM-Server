@@ -10,6 +10,7 @@ import {
   Request,
   HttpStatus,
   Res,
+  Delete,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/CreateUserDto';
 import { log } from 'console';
@@ -51,7 +52,7 @@ export class AuthenticationController {
     }
   }
 
-  @Post('logout')
+  @Delete('logout')
   logout(@Request() req: any, @Res() res: Response) {
     // req.logout(function (err) {
     //   if (err) {
@@ -66,11 +67,8 @@ export class AuthenticationController {
     // });
 
     req.logOut(() => {
-      console.log('logout');
+      res.redirect('/');
     });
-    req.clearCookie('SESSION_ID', { path: '/', domain: 'localhost' });
-    res.clearCookie('SESSION_ID', { path: '/', domain: 'localhost' });
-    req.user = null;
     // res.location('/');
     return {
       message: 'Logout successful',
