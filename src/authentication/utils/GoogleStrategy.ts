@@ -3,15 +3,18 @@ import { PassportStrategy } from '@nestjs/passport';
 import { validate } from 'class-validator';
 import { Strategy, Profile } from 'passport-google-oauth20';
 import { AuthenticationService } from '../authentication.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(private readonly authService: AuthenticationService) {
+  constructor(
+    private readonly authService: AuthenticationService,
+    private readonly configService: ConfigService,
+  ) {
     super({
-      clientID:
-        '93685604129-i25m0mp1j49oel2r75bm563hejkbn2ab.apps.googleusercontent.com',
-      clientSecret: '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',
-      callbackURL: 'https://apm-server.onrender.com/api/auth/google/redirect',
+      clientID: configService.getOrThrow<string>('GOOGLE_CLIENT_ID'),
+      clientSecret: configService.getOrThrow<string>('GOOGLE_CLIENT_SECRET'),
+      callbackURL: configService.getOrThrow<string>('GOOGLE_REDIRECT_URL'),
       scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
       prompt: 'consent',
       accessType: 'offline',
