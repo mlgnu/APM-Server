@@ -17,9 +17,11 @@ import { log } from 'console';
 import { GoogleAuthGuard, LoginGuard } from './utils/Guards';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth/google')
 export class AuthenticationController {
+  constructor(private readonly configService: ConfigService) {}
   @Post('')
   @UsePipes(ValidationPipe)
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -43,7 +45,7 @@ export class AuthenticationController {
       httpOnly: true,
     });
 
-    res.redirect('http://localhost:5173');
+    res.redirect(this.configService.getOrThrow('CLIENT_URL'));
   }
   handleRedirect(@Request() req: any, @Res() res: any) {
     console.log(req.user);
