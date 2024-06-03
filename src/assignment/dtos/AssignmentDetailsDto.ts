@@ -17,9 +17,6 @@ export class AssignmentDetailsDto {
   })
   department: Department;
 
-  @IsNumberString()
-  coordinatorId: number;
-
   @IsArray()
   @ValidateNested({ each: true })
   assignments: AssignmentDto[];

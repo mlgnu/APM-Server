@@ -12,7 +12,7 @@ export class Feedback {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'double precision' })
   rating: number;
 
   @Column({ type: 'text' })

@@ -250,20 +250,19 @@ export class MonitorService {
 
   async editEvent(
     event: ScheduleSessionDto,
-    eventId: string,
+    eventId: number,
     accessToken: string,
     refreshToken: string,
   ) {
     const client = this.initializeClient(accessToken, refreshToken);
+    const monitoringSession = await this.monitoringSessionRepo.findOneBy({
+      id: eventId,
+    });
     const hangoutLink = await this.editGoogleCalender(
       await this.constructEventBody(event),
-      eventId,
+      monitoringSession.googleId,
       client,
     );
-
-    const monitoringSession = await this.monitoringSessionRepo.findOneBy({
-      googleId: eventId,
-    });
 
     monitoringSession.studentId = event.studentId;
     monitoringSession.date = event.date;

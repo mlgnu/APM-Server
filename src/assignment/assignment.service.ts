@@ -2,22 +2,18 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/typeorm/User';
 import { Advisor } from 'src/typeorm/Advisor';
-// import { Collection } from 'src/typeorm/Collection';
 import { DataSource, Repository } from 'typeorm';
 import { Student } from 'src/typeorm/Student';
-import { faker } from '@faker-js/faker';
 import { AssignmentDetailsDto } from './dtos/AssignmentDetailsDto';
 import { Department } from 'types';
 import { Assignment, AssignmentStatus } from 'src/typeorm/Assignment';
 import { StudentAdvisorAssignment } from 'src/typeorm/StudentAdvisorAssignment';
 import { Coordinator } from 'src/typeorm/Coordinator';
+import { EditAssignmentDto } from './dtos/EditAssignmentDto';
 
 @Injectable()
 export class AssignmentService {
   constructor(
-    // @InjectRepository(User) private readonly userRepo: Repository<User>,
-    // @InjectRepository(Advisor)
-    // private readonly advisorRepo: Repository<Advisor>,
     @InjectRepository(Assignment)
     private readonly assignmentRepo: Repository<Assignment>,
     private readonly dataSource: DataSource,
@@ -45,23 +41,6 @@ export class AssignmentService {
         id: assignment.a_assignmentId,
       };
     });
-  }
-
-  async getAllStudentsOfAdvisor() {
-    const approvedAss = this.dataSource
-      .createQueryBuilder(Assignment, 'assignments')
-      .select('assignments.assignmentId')
-      .where('assignments.status = :status', { status: 'approved' });
-    // TODO to check it and change advisor email to ID
-    const students = this.dataSource
-      .createQueryBuilder(StudentAdvisorAssignment, 'ass')
-      .select('ass.studentEmail', 'ass.advisorEmail')
-      .where('ass.assignmentID IN (' + approvedAss.getQuery() + ')')
-      .setParameters(approvedAss.getParameters())
-      .andWhere('ass.advisorEmail = :advisorEmail', { advisorEmail: 'ddd' })
-      .getRawMany();
-
-    return students;
   }
 
   async getAssignmentsByYearAndDepartment(year: number, department: string) {
@@ -149,35 +128,35 @@ export class AssignmentService {
           assignmentId: savedAssignment.assignmentId,
         });
         await studentAdvisorRepo.save(assignmentData);
-        const userStudent = await userRepo.findOneBy({
+        let userStudent = await userRepo.findOneBy({
           userEmail: studentAdvisorAssignment.studentId + '@siswa.um.edu.my',
         });
 
         if (!userStudent) {
-          const user = userRepo.create({
+          userStudent = userRepo.create({
             userEmail: studentAdvisorAssignment.studentId + '@siswa.um.edu.my',
             role: 0,
           });
-          await userRepo.save(user);
+          await userRepo.save(userStudent);
         }
 
-        const userAdvisor = await userRepo.findOneBy({
+        let userAdvisor = await userRepo.findOneBy({
           userEmail: studentAdvisorAssignment.advisorId + '@um.edu.my',
         });
 
         if (!userAdvisor) {
-          const user = userRepo.create({
+          userAdvisor = userRepo.create({
             userEmail: studentAdvisorAssignment.advisorId + '@um.edu.my',
             role: 1,
           });
-          await userRepo.save(user);
+          await userRepo.save(userAdvisor);
         }
 
         let advisor = await advisorRepo.findOneBy({ user: userAdvisor });
         let student = await studentRepo.findOneBy({ user: userStudent });
         if (!student) {
           student = studentRepo.create({
-            user: student,
+            user: userStudent,
             firstName: 'Student',
             lastName: studentAdvisorAssignment.studentId,
             department:
@@ -291,179 +270,13 @@ export class AssignmentService {
     return await this.assignmentRepo.remove(assignment);
   }
 
-  // async deleteAssignment(userId: number) {
-  //   const assignment = await this.assignmentRepo.findOneBy({
-  //     assignmentId: userId,
-  //   });
-  //   if (!assignment) {
-  //     return new BadRequestException('Assignment not found');
-  //   }
-  //   await this.assignmentRepo.remove(assignment);
-  //   return assignment;
-  // }
-
-  // async assignStudentToAdvisor({ studentId, advisorId }: assignToAdvisorDto) {
-  //   // const student = await this.userRepo.findOneBy({ id: studentId });
-  //   // const advisor = await this.advisorRepo.findOneBy({ id: advisorId });
-  //   //d
-  //   // to add
-  //   // if (!student || !advisor) {
-  //   //   return new BadRequestException('Student or advisor not found');
-  //   // }
-  //   // why this code is not working?
-  //   // please answer here
-  //   // please answer here
-  //   const queryRunner = this.dataSource.createQueryRunner();
-  //   await queryRunner.connect();
-  //   await queryRunner.startTransaction();
-  //   try {
-  //     const userRepo = queryRunner.manager.getRepository(User);
-  //     const advisorRepo = queryRunner.manager.getRepository(Advisor);
-  //     const assignmentRepo = queryRunner.manager.getRepository(Assignment);
-  //     const studentRepo = queryRunner.manager.getRepository(Student);
-  //
-  //     const departments = [
-  //       'Computer System and Network',
-  //     'Artificial Intelligence',
-  //     'Information Systems',
-  //     'Data Science',
-  //     'Software Engineering',
-  //     'Multimedia Computing',
-  //   ];
-  //   // create a bunch of users using faker js and make a realtion to them with student repo
-  //   for (let i = 0; i < 10; i++) {
-  //     const firstName = faker.person.firstName();
-  //     const lastName = faker.person.lastName();
-  //
-  //     const user = userRepo.create({
-  //       userEmail: faker.internet.email({
-  //         firstName: firstName.toLowerCase(),
-  //         lastName: lastName.toLowerCase(),
-  //         provider: 'um.edu.my',
-  //       }),
-  //       role: 1,
-  //     });
-  //
-  //     await userRepo.save(user);
-  //     const advisor = advisorRepo.create({
-  //       department: faker.helpers.arrayElement(departments),
-  //       user,
-  //       firstName,
-  //       lastName,
-  //     });
-  //     await advisorRepo.save(advisor);
-  //     // const student = studentRepo.create({
-  //     //   user,
-  //     //   firstName,
-  //     //   lastName,
-  //     //   department: faker.helpers.arrayElement(departments),
-  //     // });
-  //     // await studentRepo.save(student);
-  //   }
-  //   await queryRunner.commitTransaction();
-  //   // return [student, user];
-  // } catch (error) {
-  //   await queryRunner.rollbackTransaction();
-  // } finally {
-  //   await queryRunner.release();
-  // }
-
-  // function generateRandomName() {
-  //   // Define arrays of common first names and last names
-  //   const firstNames = [
-  //     'John',
-  //     'Jane',
-  //     'Alice',
-  //     'Bob',
-  //     'Michael',
-  //     'Emily',
-  //     'David',
-  //     'Sarah',
-  //     'James',
-  //     'Olivia',
-  //     'William',
-  //     'Emma',
-  //     'Joseph',
-  //     'Sophia',
-  //   ];
-  //   const lastNames = [
-  //     'Doe',
-  //     'Smith',
-  //     'Johnson',
-  //     'Brown',
-  //     'Williams',
-  //     'Jones',
-  //     'Garcia',
-  //     'Davis',
-  //     'Miller',
-  //     'Wilson',
-  //     'Taylor',
-  //     'Anderson',
-  //     'Thomas',
-  //     'Moore',
-  //   ];
-  //
-  //   // Generate a random index for both first names and last names arrays
-  //   const randomFirstNameIndex = Math.floor(
-  //     Math.random() * firstNames.length,
-  //   );
-  //   const randomLastNameIndex = Math.floor(Math.random() * lastNames.length);
-
-  // Retrieve a random first name and last name from the arrays
-  // const randomFirstName = firstNames[randomFirstNameIndex];
-  // const randomLastName = lastNames[randomLastNameIndex];
-
-  // Concatenate the first name and last name to form the random name
-  // const randomFullName = randomFirstName + ' ' + randomLastName;
-
-  //   return [randomFirstName, randomLastName];
-  // }
-
-  // Example usage
-  // console.log(randomName); // Output a random name, e.g., "John Smith"
-  // for (let i = 15; i < 30; i++)
-  // const departments = [
-  //   'Computer System and Network',
-  //   'Artificial Intelligence',
-  //   'Information Systems',
-  //   'Data Science',
-  //   'Software Engineering',
-  //   'Multimedia Computing',
-  // ];
-  // {
-  // const randomName = generateRandomName();
-  // const timestamp = Date.now();
-  // const email = 'advisor' + timestamp + '@siswa.um.edu';
-  // const newUser = this.userRepo.create({ userEmail: email, role: 1 });
-  // await this.userRepo.save(newUser);
-  // const advisor = this.advisorRepo.create({
-  //   department: departments[Math.floor(Math.random() * departments.length)],
-  //   user: newUser,
-  //   firstName: randomName[0],
-  //   lastName: randomName[1],
-  // });
-  // await this.advisorRepo.save(advisor);
-  // const student = this.studentRepo.create({
-  //   user: newUser,
-  //   firstName: randomName[0],
-  //   lastName: randomName[1],
-  // });
-  // await this.studentRepo.save(student);
-  // student.user = newUser;
-  // const stundetName = generateRandomName();
-  // student.firstName = stundetName[0];
-  // student.lastName = stundetName[1];
-  // await this.studentRepo.save(student);
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
-  // }
-
-  // assign both student and advisor to the assignment
-  // const assignment = new Assignment();
-  // assignment.studentId = studentId;
-  // assignment.advisorId = advisorId;
-  // await this.assignmentRepo.save(assignment);
-  // this.assignmentRepo.create(assignment);
-
-  // return assignment;
-  //   }
+  async editAssignment(assignments: EditAssignmentDto, coordinatorId: number) {
+    await this.deleteAssignment(assignments.assignmentId);
+    console.log('deleted', assignments.assignmentId);
+    const makeAssignment = await this.makeAssignment(
+      assignments,
+      coordinatorId,
+    );
+    return makeAssignment;
+  }
 }

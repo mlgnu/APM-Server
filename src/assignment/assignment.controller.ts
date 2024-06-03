@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -22,19 +23,13 @@ import {
 import { Request } from 'express';
 import { RolesGuards } from 'src/authentication/utils/roles.guard';
 import { Roles } from 'src/authentication/utils/roles.decorator';
+import { EditAssignmentDto } from './dtos/EditAssignmentDto';
 
 @Controller('assignment')
 @UseGuards(RolesGuards)
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
-  // @Post('assign')
-  // @UsePipes(ValidationPipe)
-  // assignToAdvisor(@Body() assign: assignToAdvisorDto) {
-  //   console.log(assign);
-  //   return this.assignmentService.assignStudentToAdvisor(assign);
-  //   return 'lol';
-  // }
   @Roles('supervisor')
   @Get('all')
   getAssignmentsByYearAndDepartment(
@@ -63,6 +58,18 @@ export class AssignmentController {
     console.log(req.user, 'from assignment controller');
     console.log(assignments);
     return this.assignmentService.makeAssignment(assignments, req.user['id']);
+  }
+
+  @Roles('coordinator')
+  @Patch('edit')
+  editAssignment(
+    @Body('assignments') assignments: EditAssignmentDto,
+    @Req() req: Request,
+  ) {
+    return this.assignmentService.editAssignment(
+      assignments,
+      req['user']['id'],
+    );
   }
 
   @Get()

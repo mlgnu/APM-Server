@@ -22,7 +22,6 @@ export class AnnouncementsService {
       order: { created_at: 'DESC' },
       take: limit,
       skip: offset,
-      //select: ['announcement', 'created_at'],
     });
 
     const count = await this.announcementRepo.count();

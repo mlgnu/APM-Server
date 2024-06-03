@@ -13,6 +13,9 @@ export class Announcement {
   })
   id: string;
 
+  @Column({ nullable: true })
+  title: string;
+
   @Column({ nullable: false, type: 'text' })
   announcement: string;
 

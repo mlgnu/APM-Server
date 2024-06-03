@@ -66,15 +66,13 @@ export class AuthenticationController {
     //   // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
     // });
 
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    res.clearCookie('SESSION_ID');
     req.logOut(() => {
-      res.redirect('/');
+      req.session.destroy(() => {
+        res.send('Logged out');
+      });
     });
-    // res.location('/');
-    return {
-      message: 'Logout successful',
-      statusCode: HttpStatus.OK,
-    };
-
-    // res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
   }
 }

@@ -22,6 +22,7 @@ export class MessageService {
   }
 
   async getChat(senderId: number, recieverId: number, isAdvisor: boolean) {
+    console.log(senderId, recieverId);
     if (isAdvisor) {
       const advisor = await this.authService.findAdvisorByUserId(senderId, {
         students: true,
@@ -83,7 +84,7 @@ export class MessageService {
       const contacts = await this.dataSource
         .createQueryBuilder(User, 'u')
         .select([
-          'u.user_id',
+          's.student_id',
           's.department',
           's.firstName',
           's.lastName',
@@ -106,18 +107,45 @@ export class MessageService {
       console.log(contacts);
 
       return contacts.map((contact) => ({
-        id: contact.user_id,
+        id: contact.student_id,
+        department: contact.s_department,
+        firstName: contact.s_first_name,
+        lastName: contact.s_last_name,
+        userEmail: contact.u_user_Email,
+      }));
+    } else if (role == 0) {
+      const contacts = await this.dataSource
+        .createQueryBuilder(User, 'u')
+        .select([
+          's.advisor_id',
+          's.department',
+          's.firstName',
+          's.lastName',
+          'u.userEmail',
+        ])
+        .innerJoin('advisors', 's', 's.user_id = u.user_id')
+        .where((qb) => {
+          const sub = qb
+            .subQuery()
+            .select('saa.advisor_email')
+            .from(StudentAdvisorAssignment, 'saa')
+            .innerJoin('assignments', 'a', 'a.assignmentId = saa.assignmentId')
+            .where('a.status = :status', { status: 'approved' })
+            .andWhere('saa.student_email = :email', { email })
+            .getQuery();
+          return 'u.userEmail IN ' + sub;
+        })
+        .getRawMany();
+
+      console.log(contacts, 'dd');
+
+      return contacts.map((contact) => ({
+        id: contact.advisor_id,
         department: contact.s_department,
         firstName: contact.s_first_name,
         lastName: contact.s_last_name,
         userEmail: contact.u_user_Email,
       }));
     }
-    // else if (role == 0) {
-    //   const student = await this.authService.findStudentByUserId(id, {
-    //     advisor: { user: true },
-    //   });
-    //   return [student.advisor];
-    // }
   }
 }

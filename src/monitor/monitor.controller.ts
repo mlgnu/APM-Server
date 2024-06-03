@@ -72,7 +72,7 @@ export class MonitorController {
   @UsePipes(ValidationPipe)
   @UseGuards(LoginGuard)
   async editEvent(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Req() req: Request,
     @Body() scheduleSessionDto: ScheduleSessionDto,
   ): Promise<any> {
