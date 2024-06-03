@@ -11,7 +11,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientID:
         '93685604129-i25m0mp1j49oel2r75bm563hejkbn2ab.apps.googleusercontent.com',
       clientSecret: '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',
-      callbackURL: 'http://localhost:3001/api/auth/google/redirect',
+      callbackURL: 'https://apm-server.onrender.com/api/auth/google/redirect',
       scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
       prompt: 'consent',
       accessType: 'offline',
