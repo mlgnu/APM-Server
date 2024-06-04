@@ -41,16 +41,16 @@ export class AuthenticationController {
     const googleRefreshToken = req.user.refreshToken;
 
     res.cookie('access_token', googleToken, {
+      sameSite: 'none',
       secure: true,
-      sameSite: 'lax',
       httpOnly: true,
-      domain: 'onrender.com',
-      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
     res.cookie('refresh_token', googleRefreshToken, {
       sameSite: 'none',
       secure: true,
       httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
     res.end();
