@@ -16,8 +16,10 @@ async function bootstrap() {
     sessionRepo,
   );
 
+  const configService = app.get('ConfigService');
+
   app.enableCors({
-    origin: 'https://apm-client.onrender.com/',
+    origin: 'https://apm-client.onrender.com',
     credentials: true,
   });
   app.use(cookieParser());
