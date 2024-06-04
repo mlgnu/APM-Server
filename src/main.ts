@@ -17,7 +17,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'https://apm-client.onrender.com/', // Replace with your frontend origin
+    origin: 'https://apm-client.onrender.com/',
     credentials: true,
   });
   app.use(cookieParser());
@@ -30,7 +30,6 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        sameSite: 'none',
         maxAge: 1000 * 60 * 60 * 24,
       },
       store: typeormStore,
