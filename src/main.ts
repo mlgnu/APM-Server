@@ -26,6 +26,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
+  app.use('trust proxy', 1);
   app.use(
     session({
       name: 'SESSION_ID',
