@@ -48,11 +48,14 @@ export class AuthenticationController {
       path: '/',
     });
     res.cookie('refresh_token', googleRefreshToken, {
+      sameSite: 'none',
+      secure: true,
       httpOnly: true,
-      domain: 'onrender.com',
     });
 
-    res.redirect(this.configService.getOrThrow('CLIENT_URL'));
+    res.end();
+
+    // res.redirect(this.configService.getOrThrow('CLIENT_URL'));
   }
   handleRedirect(@Request() req: any, @Res() res: any) {
     console.log(req.user);
