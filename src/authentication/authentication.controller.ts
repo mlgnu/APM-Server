@@ -53,9 +53,7 @@ export class AuthenticationController {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.end();
-
-    // res.redirect(this.configService.getOrThrow('CLIENT_URL'));
+    res.redirect(this.configService.getOrThrow('CLIENT_URL'));
   }
   handleRedirect(@Request() req: any, @Res() res: any) {
     console.log(req.user);
