@@ -30,6 +30,8 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
+        sameSite: 'lax',
+        domain: 'onrender.com',
         maxAge: 1000 * 60 * 60 * 24,
       },
       store: typeormStore,
