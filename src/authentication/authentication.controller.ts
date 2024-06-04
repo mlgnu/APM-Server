@@ -49,7 +49,7 @@ export class AuthenticationController {
     });
     res.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
-      sameSite: 'none',
+      domain: 'onrender.com',
     });
 
     res.redirect(this.configService.getOrThrow('CLIENT_URL'));
