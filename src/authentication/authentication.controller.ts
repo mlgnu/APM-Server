@@ -43,6 +43,7 @@ export class AuthenticationController {
     res.cookie('access_token', googleToken, {
       httpOnly: true,
       domain: '.onrender.com',
+      path: '/',
     });
     res.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
