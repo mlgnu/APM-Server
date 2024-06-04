@@ -45,6 +45,7 @@ export class AuthenticationController {
       secure: true,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: 'onrender.com',
     });
     res.cookie('refresh_token', googleRefreshToken, {
       sameSite: 'none',
