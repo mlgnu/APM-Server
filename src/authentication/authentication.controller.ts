@@ -41,6 +41,7 @@ export class AuthenticationController {
     const googleRefreshToken = req.user.refreshToken;
 
     res.cookie('access_token', googleToken, {
+      sameSite: 'lax',
       httpOnly: true,
       domain: '.onrender.com',
       path: '/',
