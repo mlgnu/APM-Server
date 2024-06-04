@@ -7,6 +7,7 @@ import { DataSource } from 'typeorm';
 import { SessionEntity } from './typeorm/Session';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +17,7 @@ async function bootstrap() {
     sessionRepo,
   );
 
-  const configService = app.get('ConfigService');
+  const configService = app.get(ConfigService);
 
   app.enableCors({
     origin: 'https://apm-client.onrender.com',
