@@ -41,13 +41,15 @@ export class AuthenticationController {
     const googleRefreshToken = req.user.refreshToken;
 
     res.cookie('access_token', googleToken, {
+      secure: true,
       sameSite: 'lax',
       httpOnly: true,
-      domain: '.onrender.com',
+      domain: 'onrender.com',
       path: '/',
     });
     res.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
+      sameSite: 'none',
     });
 
     res.redirect(this.configService.getOrThrow('CLIENT_URL'));
