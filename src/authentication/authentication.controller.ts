@@ -40,7 +40,10 @@ export class AuthenticationController {
     const googleToken = req.user.accessToken;
     const googleRefreshToken = req.user.refreshToken;
 
-    res.cookie('access_token', googleToken, { httpOnly: true });
+    res.cookie('access_token', googleToken, {
+      httpOnly: true,
+      domain: '.onrender.com',
+    });
     res.cookie('refresh_token', googleRefreshToken, {
       httpOnly: true,
     });
