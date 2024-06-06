@@ -73,7 +73,7 @@ export class AssignmentController {
   }
 
   @Get()
-  @Roles('coordinator', 'advisor')
+  @Roles('coordinator', 'supervisor')
   getAssignments(
     @Query('limit', ParseIntPipe) limit: number,
     @Query('page', ParseIntPipe) page: number,
