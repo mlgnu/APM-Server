@@ -36,7 +36,6 @@ async function bootstrap() {
       resave: false,
       cookie: {
         sameSite: 'none',
-        domain: '.onrender.com',
         secure: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
