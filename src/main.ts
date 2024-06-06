@@ -35,7 +35,7 @@ async function bootstrap() {
       saveUninitialized: false,
       resave: false,
       cookie: {
-        sameSite: 'lax',
+        sameSite: 'none',
         domain: '.onrender.com',
         secure: true,
         httpOnly: true,
