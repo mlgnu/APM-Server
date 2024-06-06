@@ -69,4 +69,4 @@ export class ProfileService {
       return await this.advisorRepo.save(advisor);
     }
   }
-ٌ}
+}
