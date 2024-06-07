@@ -4,12 +4,14 @@ import { validate } from 'class-validator';
 import { Strategy, Profile } from 'passport-google-oauth20';
 import { AuthenticationService } from '../authentication.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     private readonly authService: AuthenticationService,
     private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {
     super({
       clientID: configService.getOrThrow<string>('GOOGLE_CLIENT_ID'),
@@ -18,6 +20,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
       prompt: 'consent',
       accessType: 'offline',
+      session: false,
     });
   }
 
@@ -42,8 +45,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       userEmail: profile.emails[0].value,
     });
 
-    const userWithTokens = { ...user, accessToken, refreshToken };
-
-    return user ? userWithTokens : null;
+    if (user) {
+      const jwt = this.jwtService.sign({
+        id: user.id,
+        userEmail: user.userEmail,
+        role: user.role,
+        accessToken,
+        refreshToken,
+      });
+      return jwt;
+    }
+    return null;
   }
 }

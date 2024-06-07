@@ -9,6 +9,7 @@ export class RolesGuards implements CanActivate {
     console.log(roles);
 
     const request = context.switchToHttp().getRequest();
+    console.log(request['user'], 'JWTGuard roles');
     const role = request['user']['role'];
     return roles.includes(this.mapRoles(role));
   }

@@ -9,12 +9,15 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { createActivityDto } from './dtos/createActivity.dto';
 import { Roles } from 'src/authentication/utils/roles.decorator';
 import { RejectActivityDto } from './dtos/RejectActivity.dto';
+import { JWTGuard } from 'src/authentication/utils/jwt.gurad';
 
+@UseGuards(JWTGuard)
 @Controller('activity')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}

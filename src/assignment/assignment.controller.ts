@@ -24,9 +24,10 @@ import { Request } from 'express';
 import { RolesGuards } from 'src/authentication/utils/roles.guard';
 import { Roles } from 'src/authentication/utils/roles.decorator';
 import { EditAssignmentDto } from './dtos/EditAssignmentDto';
+import { JWTGuard } from 'src/authentication/utils/jwt.gurad';
 
 @Controller('assignment')
-@UseGuards(RolesGuards)
+@UseGuards(JWTGuard, RolesGuards)
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
@@ -99,7 +100,6 @@ export class AssignmentController {
 
   @Get('sa/:id')
   @Roles('coordinator', 'supervisor')
-  @UseGuards(LoginGuard)
   getStudentAdvisorAssignment(@Param('id', ParseIntPipe) id: number) {
     return this.assignmentService.getStudentAdvisorAssignments(id);
   }

@@ -7,17 +7,18 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
-  Request,
   HttpStatus,
   Res,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/CreateUserDto';
 import { log } from 'console';
 import { GoogleAuthGuard, LoginGuard } from './utils/Guards';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { JWTGuard } from './utils/jwt.gurad';
 
 @Controller('auth/google')
 export class AuthenticationController {
@@ -33,38 +34,31 @@ export class AuthenticationController {
   google() {
     console.log('ajs');
   }
-  // I want to check if the user is logged in or not please
+
   @Get('redirect')
   @UseGuards(GoogleAuthGuard)
-  googleLoginCallback(@Request() req, @Res() res: Response) {
-    const googleToken = req.user.accessToken;
-    const googleRefreshToken = req.user.refreshToken;
-
-    res.cookie('access_token', googleToken, {
-      sameSite: 'none',
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: 'onrender.com',
-    });
-    res.cookie('refresh_token', googleRefreshToken, {
-      sameSite: 'none',
-      secure: true,
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
-
-    res.redirect(this.configService.getOrThrow('CLIENT_URL'));
+  googleLoginCallback(@Req() req: Request, @Res() res: Response) {
+    console.log(req.user, 'from google login callback');
+    res.redirect(
+      `${this.configService.getOrThrow('CLIENT_URL')}?token=${req.user}`,
+    );
   }
-  handleRedirect(@Request() req: any, @Res() res: any) {
+
+  handleRedirect(@Req() req: any, @Res() res: any) {
     console.log(req.user);
     if (req.isAuthenticated()) {
       res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
     }
   }
 
+  @UseGuards(JWTGuard)
+  @Get('test')
+  test(@Req() req: Request) {
+    console.log(req.user);
+    return req.user;
+  }
   @Delete('logout')
-  logout(@Request() req: any, @Res() res: Response) {
+  logout(@Req() req: any, @Res() res: Response) {
     // req.logout(function (err) {
     //   if (err) {
     //     return console.log(err);

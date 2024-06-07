@@ -14,22 +14,26 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { MonitorService } from './monitor.service';
-import { LoginGuard } from 'src/authentication/utils/Guards';
 import { Request } from 'express';
 import { ScheduleSessionDto } from './dtos/ScheduleSessionDto';
+import { JWTGuard } from 'src/authentication/utils/jwt.gurad';
+import { RolesGuards } from 'src/authentication/utils/roles.guard';
+import { Roles } from 'src/authentication/utils/roles.decorator';
 
+@UseGuards(JWTGuard, RolesGuards)
 @Controller('monitor')
 export class MonitorController {
   constructor(private readonly monitorService: MonitorService) {}
 
+  @Roles('advisor')
   @Get('students')
-  @UseGuards(LoginGuard)
   async getStudentsByAdvisorId(@Req() req: Request) {
     return this.monitorService.getAllstudentsByAdvisorId(
       req['user']['userEmail'],
     );
   }
 
+  @Roles('advisor')
   @Get('advisor')
   async getAdvisorEvents(
     @Req() req: Request,
@@ -39,6 +43,7 @@ export class MonitorController {
     return this.monitorService.getAdvisorEvents(req['user']['id'], page, limit);
   }
 
+  @Roles('student')
   @Get('student')
   async getStudentEvents(
     @Req() req: Request,
@@ -53,8 +58,8 @@ export class MonitorController {
   }
 
   @Post()
+  @Roles('advisor')
   @UsePipes(ValidationPipe)
-  @UseGuards(LoginGuard)
   async createEvent(
     @Req() req: Request,
     @Body() scheduleSessionDto: ScheduleSessionDto,
@@ -69,8 +74,8 @@ export class MonitorController {
   }
 
   @Patch(':id')
+  @Roles('advisor')
   @UsePipes(ValidationPipe)
-  @UseGuards(LoginGuard)
   async editEvent(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: Request,
@@ -86,6 +91,7 @@ export class MonitorController {
   }
 
   @Delete(':id')
+  @Roles('advisor')
   async deleteEvent(@Req() req: Request, @Param('id') id: string) {
     return this.monitorService.deleteEvent(
       id,

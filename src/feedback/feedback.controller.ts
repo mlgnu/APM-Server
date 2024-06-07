@@ -13,9 +13,10 @@ import { Roles } from 'src/authentication/utils/roles.decorator';
 import { RolesGuards } from 'src/authentication/utils/roles.guard';
 import { SubmitFeedbackDto } from './dtos/SubmitFeedbackDto';
 import { Request } from 'express';
+import { JWTGuard } from 'src/authentication/utils/jwt.gurad';
 
 @Controller('feedback')
-@UseGuards(RolesGuards)
+@UseGuards(JWTGuard, RolesGuards)
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 

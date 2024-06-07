@@ -21,31 +21,31 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: 'https://apm-client.onrender.com',
+    origin: configService.get('CLIENT_URL') || 'http://localhost:5173',
     credentials: true,
   });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
   app.set('trust proxy', 1);
-  app.use(
-    session({
-      name: 'SESSION_ID',
-      secret: 'asgpjkwaepogmoiawehgjoaiwejfoiamnwosigja',
-      saveUninitialized: false,
-      resave: false,
-      cookie: {
-        sameSite: 'none',
-        secure: true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      },
-      store: typeormStore,
-    }),
-  );
+  // app.use(
+  //   session({
+  //     name: 'SESSION_ID',
+  //     secret: 'asgpjkwaepogmoiawehgjoaiwejfoiamnwosigja',
+  //     saveUninitialized: false,
+  //     resave: false,
+  //     cookie: {
+  //       sameSite: 'none',
+  //       secure: true,
+  //       httpOnly: true,
+  //       maxAge: 1000 * 60 * 60 * 24 * 7,
+  //     },
+  //     store: typeormStore,
+  //   }),
+  // );
 
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // app.use(passport.initialize());
+  // app.use(passport.session());
 
   await app.listen(3001);
 }
