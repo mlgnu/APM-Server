@@ -68,8 +68,8 @@ export class MonitorController {
     return this.monitorService.createEvent(
       scheduleSessionDto,
       req['user']['id'],
-      req.user['access_token'],
-      req.user['refresh_token'],
+      req.user['accessToken'],
+      req.user['refreshToken'],
     );
   }
 
@@ -85,8 +85,8 @@ export class MonitorController {
     return this.monitorService.editEvent(
       scheduleSessionDto,
       id,
-      req.user['access_token'],
-      req.user['refresh_token'],
+      req.user['accessToken'],
+      req.user['refreshToken'],
     );
   }
 
@@ -95,8 +95,8 @@ export class MonitorController {
   async deleteEvent(@Req() req: Request, @Param('id') id: string) {
     return this.monitorService.deleteEvent(
       id,
-      req.user['access_token'],
-      req.user['refresh_token'],
+      req.user['accessToken'],
+      req.user['refreshToken'],
     );
   }
 }
