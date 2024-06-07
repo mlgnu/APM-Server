@@ -44,13 +44,6 @@ export class AuthenticationController {
     );
   }
 
-  handleRedirect(@Req() req: any, @Res() res: any) {
-    console.log(req.user);
-    if (req.isAuthenticated()) {
-      res.redirect(HttpStatus.TEMPORARY_REDIRECT, 'http://localhost:5173');
-    }
-  }
-
   @UseGuards(JWTGuard)
   @Get('test')
   test(@Req() req: Request) {
