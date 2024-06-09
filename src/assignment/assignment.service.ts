@@ -240,7 +240,11 @@ export class AssignmentService {
     };
   }
 
-  async updateAssignmentStatus(assignmentId: number, action: number) {
+  async updateAssignmentStatus(
+    assignmentId: number,
+    action: number,
+    message?: string,
+  ) {
     const assignment = await this.assignmentRepo.findOneBy({
       assignmentId: assignmentId,
     });
@@ -251,6 +255,7 @@ export class AssignmentService {
       assignment.status = AssignmentStatus.APPROVED;
     } else if (action === 0) {
       assignment.status = AssignmentStatus.REJECTED;
+      assignment.message = message;
     }
     assignment.updatedAt = new Date();
     await this.assignmentRepo.save(assignment);

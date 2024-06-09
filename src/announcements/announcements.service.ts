@@ -10,8 +10,8 @@ export class AnnouncementsService {
     private readonly announcementRepo: Repository<Announcement>,
   ) {}
 
-  async create(announcement: string): Promise<Announcement> {
-    return await this.announcementRepo.save({ announcement });
+  async create(announcement: any): Promise<Announcement> {
+    return await this.announcementRepo.save(announcement);
   }
 
   async findAll(page: number) {
@@ -41,7 +41,10 @@ export class AnnouncementsService {
 
   async edit(id, announcementDetails) {
     const announcementToUpdate = await this.findOne(id);
-    announcementToUpdate.announcement = announcementDetails.announcement;
+    console.log(announcementToUpdate, 'announcementToUpdate');
+    announcementToUpdate.title = announcementDetails.announcement.title;
+    announcementToUpdate.announcement =
+      announcementDetails.announcement.announcement;
     return await this.announcementRepo.save(announcementToUpdate);
   }
 }

@@ -112,8 +112,12 @@ export class AssignmentController {
 
   @Post('reject/:id')
   @Roles('supervisor')
-  rejectAssignment(@Param('id', ParseIntPipe) id: number) {
-    return this.assignmentService.updateAssignmentStatus(id, 0);
+  rejectAssignment(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('message') message: string,
+  ) {
+    console.log(message, 'testing message');
+    return this.assignmentService.updateAssignmentStatus(id, 0, message);
   }
 
   @Post('delete/:id')

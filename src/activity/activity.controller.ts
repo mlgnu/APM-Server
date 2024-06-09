@@ -70,8 +70,7 @@ export class ActivityController {
     }
   }
 
-  // TODO : Remove Advisor role
-  @Roles('coordinator', 'advisor')
+  @Roles('coordinator')
   @Patch('approve/:id/')
   async approveActivity(
     @Param('id', ParseIntPipe) id: number,
@@ -80,8 +79,7 @@ export class ActivityController {
     return this.activityService.approveActivity(id, req['user']['id']);
   }
 
-  // TODO : Remove Advisor role
-  @Roles('coordinator', 'advisor')
+  @Roles('coordinator')
   @Patch('reject/:id/')
   async rejectActivity(
     @Param('id') id: number,
