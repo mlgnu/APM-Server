@@ -17,6 +17,7 @@ import { JWTGuard } from 'src/authentication/utils/jwt.gurad';
 
 @Controller('feedback')
 @UseGuards(JWTGuard, RolesGuards)
+@UseGuards(RolesGuards)
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 

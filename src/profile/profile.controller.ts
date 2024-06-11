@@ -55,7 +55,7 @@ export class ProfileController {
   deleteUser(@Req() req: any) {
     // return this.profileService.deleteUser(req);
   }
-  @Roles('student', 'advisor')
+  @Roles('student', 'advisor', 'coordinator', 'supervisor')
   @Get(':id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.profileService.getUserById(id);

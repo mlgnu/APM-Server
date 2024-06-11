@@ -1,4 +1,5 @@
 import {
+  IsBooleanString,
   IsDateString,
   IsMilitaryTime,
   IsNotEmpty,
@@ -19,6 +20,7 @@ export class ScheduleSessionDto {
   venue: string;
 
   @IsNotEmpty()
+  @IsBooleanString()
   isOnline: boolean;
 
   @IsMilitaryTime()

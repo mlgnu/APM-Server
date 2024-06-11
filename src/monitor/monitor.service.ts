@@ -86,7 +86,7 @@ export class MonitorService {
     });
     const sessions = await this.monitoringSessionRepo.find({
       where: { advisorId: advisor.id },
-      order: { id: 'DESC' },
+      order: { date: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
     });
@@ -133,7 +133,7 @@ export class MonitorService {
     });
     const sessions = await this.monitoringSessionRepo.find({
       where: { studentId: student.id },
-      order: { id: 'DESC' },
+      order: { date: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
     });
@@ -155,6 +155,7 @@ export class MonitorService {
         isOnline: session.isOnline,
         venue: session.venue,
         eventId: session.googleId,
+        sessionId: session.id,
       });
     }
     return {

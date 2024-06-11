@@ -31,6 +31,7 @@ export class AssignmentService {
     const assignments = await this.dataSource
       .createQueryBuilder(Assignment, 'a')
       .select(['a.department', 'a.year', 'a.assignmentId'])
+      .distinctOn(['a.department', 'a.year'])
       .where('a.assignmentId IN (' + approvedAss.getQuery() + ')')
       .setParameters(approvedAss.getParameters())
       .getRawMany();
