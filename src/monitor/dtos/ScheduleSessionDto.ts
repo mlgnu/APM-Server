@@ -20,7 +20,6 @@ export class ScheduleSessionDto {
   venue: string;
 
   @IsNotEmpty()
-  @IsBooleanString()
   isOnline: boolean;
 
   @IsMilitaryTime()
