@@ -21,7 +21,7 @@ export class Feedback {
   @Column({ name: 'session_id' })
   sessionId: number;
 
-  @OneToOne(() => MonitoringSession)
+  @OneToOne(() => MonitoringSession, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'session_id' })
   sesstionId: MonitoringSession;
 }
