@@ -42,6 +42,7 @@ export class ActivityService {
     });
     const payload = await this.activityRepo.find({
       where: { advisorId: advisor },
+      order: { id: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
       relations: {

@@ -86,7 +86,7 @@ export class MonitorService {
     });
     const sessions = await this.monitoringSessionRepo.find({
       where: { advisorId: advisor.id },
-      order: { date: 'DESC' },
+      order: { id: 'DESC' },
       take: limit,
       skip: (page - 1) * limit,
     });
